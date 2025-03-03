@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: CRMdemo
+  datasource:
+    url: "jdbc:mysql://owu.linkpc.net:3306/dina"
+    username: "dina"
+    password: "root"
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#  liquibase:
+#    change-log: classpath:db/changelog/db.changelog-master.yaml
+#jwt:
+#  secret: ${JWT_SECRET}
+logging:
+  level:
+    sun:
+      rmi:
+        transport:
+          tcp: OFF
+server:
+  port: 8080
