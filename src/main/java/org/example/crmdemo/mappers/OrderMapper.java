@@ -1,16 +1,18 @@
 package org.example.crmdemo.mappers;
 
-import org.example.crmdemo.dto.OrderDTO;
+import org.example.crmdemo.dto.order.OrderDto;
 import org.example.crmdemo.entities.Order;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OrderMapper {
 
-    public static OrderDTO toDTO(Order order) {
+    public static OrderDto toDto(Order order) {
         if (order == null) {
             return null;
         }
 
-        return OrderDTO.builder()
+        return OrderDto.builder()
                 .id(order.getId())
                 .name(order.getName())
                 .surname(order.getSurname())
@@ -29,7 +31,7 @@ public class OrderMapper {
                 .build();
     }
 
-    public static Order toEntity(OrderDTO dto) {
+    public static Order toEntity(OrderDto dto) {
         if (dto == null) {
             return null;
         }

@@ -1,5 +1,4 @@
-package org.example.crmdemo.dto;
-
+package org.example.crmdemo.dto.order;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class OrderDTO {
+public class OrderDto {
     private Long id;
     @Size(max = 25, message = "Name: 25 symbols max")
     private String name;

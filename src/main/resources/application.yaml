@@ -13,10 +13,14 @@ spring:
       hibernate:
         format_sql: true
         physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-#  liquibase:
-#    change-log: classpath:db/changelog/db.changelog-master.yaml
-#jwt:
-#  secret: ${JWT_SECRET}
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+jwt:
+  secret: ${JWT_SECRET}
+  access-token:
+    ttl-millis: 3600000
+  refresh-token:
+    ttl-millis: 86400000
 logging:
   level:
     sun:

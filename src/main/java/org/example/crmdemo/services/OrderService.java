@@ -1,8 +1,8 @@
 package org.example.crmdemo.services;
 
 import lombok.RequiredArgsConstructor;
-import org.example.crmdemo.dto.OrderDTO;
-import org.example.crmdemo.dto.OrderPaginationResponseDto;
+import org.example.crmdemo.dto.order.OrderDto;
+import org.example.crmdemo.dto.order.OrderPaginationResponseDto;
 import org.example.crmdemo.entities.Order;
 import org.example.crmdemo.mappers.OrderMapper;
 import org.example.crmdemo.repositories.OrderRepository;
@@ -21,13 +21,13 @@ public class OrderService {
         int offset = (page - 1) * perPage;
         long total = orderRepository.findAll().size();
 
-        List<OrderDTO> paginatedOrders = orderRepository
+        List<OrderDto> paginatedOrders = orderRepository
                 .findAll()
                 .stream()
                 .sorted(createComparator(order, direction))
                 .skip(offset)
                 .limit(perPage)
-                .map(OrderMapper::toDTO)
+                .map(OrderMapper::toDto)
                 .toList();
 
         Integer nextPage = (offset + perPage) < total ? page + 1 : null;

@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1.0.1
+      author: dina
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 1.0.2
+      author: dina
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: ${ADMIN_EMAIL}
+              - column:
+                  name: password
+                  value: ${ADMIN_PASSWORD}
+              - column:
+                  name: role
+                  value: "ROLE_ADMIN"

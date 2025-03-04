@@ -1,4 +1,4 @@
-package org.example.crmdemo.dto;
+package org.example.crmdemo.dto.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,5 +15,5 @@ public class OrderPaginationResponseDto {
     private Integer perPage;
     private Integer nextPage;
     private Integer prevPage;
-    private List<OrderDTO> data;
+    private List<OrderDto> data;
 }
