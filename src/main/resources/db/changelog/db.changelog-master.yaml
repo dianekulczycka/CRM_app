@@ -4,7 +4,7 @@ databaseChangeLog:
       author: dina
       changes:
         - createTable:
-            tableName: users
+            tableName: managers
             columns:
               - column:
                   name: id
@@ -29,12 +29,23 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: surname
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+
   - changeSet:
       id: 1.0.2
       author: dina
       changes:
         - insert:
-            tableName: users
+            tableName: managers
             columns:
               - column:
                   name: email
@@ -45,3 +56,9 @@ databaseChangeLog:
               - column:
                   name: role
                   value: "ROLE_ADMIN"
+              - column:
+                  name: name
+                  value: "admin"
+              - column:
+                  name: surname
+                  value: "adminovich"

@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "managers")
 @DynamicUpdate
 
 @Data
@@ -23,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class User implements UserDetails {
+public class Manager implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

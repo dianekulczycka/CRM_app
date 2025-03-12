@@ -2,8 +2,8 @@ package org.example.crmdemo.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.crmdemo.dto.user.*;
-import org.example.crmdemo.services.UserService;
+import org.example.crmdemo.dto.manager.*;
+import org.example.crmdemo.services.ManagerService;
 import org.example.crmdemo.utilities.JwtUtility;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/api/auth")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
-    private final UserService userService;
+    private final ManagerService managerService;
     private final JwtUtility jwtUtility;
 
     @PostMapping("/signup")
     public ResponseEntity<SignUpResponseDto> signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto) {
-        SignUpResponseDto signUpResponseDto = userService.createUser(signUpRequestDto);
+        SignUpResponseDto signUpResponseDto = managerService.createManager(signUpRequestDto);
         return new ResponseEntity<>(signUpResponseDto, HttpStatus.OK);
     }
 
@@ -37,7 +37,7 @@ public class AuthController {
         Authentication auth = authenticationManager.authenticate(authToken);
 
         if (auth.isAuthenticated()) {
-            UserDetails customer = userService.loadUserByUsername(authRequestDto.getEmail());
+            UserDetails customer = managerService.loadUserByUsername(authRequestDto.getEmail());
             String accessToken = jwtUtility.generateAccessToken(customer);
             String refreshToken = jwtUtility.generateRefreshToken(customer);
             return new ResponseEntity<>(AuthResponseDto
@@ -59,10 +59,10 @@ public class AuthController {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
             String username = jwtUtility.extractUsername(refreshToken);
-            UserDetails user = userService.loadUserByUsername(username);
+            UserDetails manager = managerService.loadUserByUsername(username);
 
-            String newAccessToken = jwtUtility.generateAccessToken(user);
-            String newRefreshToken = jwtUtility.generateRefreshToken(user);
+            String newAccessToken = jwtUtility.generateAccessToken(manager);
+            String newRefreshToken = jwtUtility.generateRefreshToken(manager);
 
             return new ResponseEntity<>(AuthResponseDto.builder()
                     .accessToken(newAccessToken)

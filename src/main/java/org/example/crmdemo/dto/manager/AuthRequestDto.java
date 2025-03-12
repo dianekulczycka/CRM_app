@@ -1,4 +1,4 @@
-package org.example.crmdemo.dto.user;
+package org.example.crmdemo.dto.manager;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

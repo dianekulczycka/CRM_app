@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.crmdemo.services.UserService;
+import org.example.crmdemo.services.ManagerService;
 import org.example.crmdemo.utilities.JwtUtility;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +25,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private static final String AUTH_HEADER_PREFIX = "Bearer ";
 
     private final JwtUtility jwtUtility;
-    private final UserService userService;
+    private final ManagerService managerService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -50,7 +50,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String email = jwtUtility.extractUsername(token);
 
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userService.loadUserByUsername(email);
+                UserDetails userDetails = managerService.loadUserByUsername(email);
 
                 if (email.equals(userDetails.getUsername())) {
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
@@ -61,8 +61,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(auth);
 
-                    log.info("Authenticated User: " + userDetails.getUsername());
-                    log.info("Roles: " + userDetails.getAuthorities());
+                    log.info("Authenticated User: {}", userDetails.getUsername());
+                    log.info("Roles: {}", userDetails.getAuthorities());
                 }
             }
         } catch (Exception e) {

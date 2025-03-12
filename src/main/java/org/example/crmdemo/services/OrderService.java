@@ -6,62 +6,43 @@ import org.example.crmdemo.dto.order.OrderPaginationResponseDto;
 import org.example.crmdemo.entities.Order;
 import org.example.crmdemo.mappers.OrderMapper;
 import org.example.crmdemo.repositories.OrderRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+
 public class OrderService {
     private final OrderRepository orderRepository;
 
-    public OrderPaginationResponseDto getOrders(int page, String order, String direction) {
-        int perPage = 25;
-        int offset = (page - 1) * perPage;
-        long total = orderRepository.findAll().size();
-
-        List<OrderDto> paginatedOrders = orderRepository
-                .findAll()
-                .stream()
-                .sorted(createComparator(order, direction))
-                .skip(offset)
-                .limit(perPage)
+    public OrderPaginationResponseDto getOrders(Pageable pageable) {
+        Page<Order> page = orderRepository.findAll(pageable);
+        List<OrderDto> orderDtos = page.stream()
                 .map(OrderMapper::toDto)
-                .toList();
+                .collect(Collectors.toList());
 
-        Integer nextPage = (offset + perPage) < total ? page + 1 : null;
-        Integer prevPage = page > 1 ? page - 1 : null;
-
-        return new OrderPaginationResponseDto(total, perPage, nextPage, prevPage, paginatedOrders);
-    }
-
-    private Comparable<?> getSortKey(Order order, String field) {
-        return switch (field) {
-            case "name" -> order.getName();
-            case "surname" -> order.getSurname();
-            case "email" -> order.getEmail();
-            case "phone" -> order.getPhone();
-            case "age" -> order.getAge();
-            case "course" -> order.getCourse();
-            case "course_format" -> order.getCourse_format();
-            case "course_type" -> order.getCourse_type();
-            case "sum" -> order.getSum();
-            case "alreadyPaid" -> order.getAlreadyPaid();
-            case "created_at" -> order.getCreated_at();
-            case "utm" -> order.getUtm();
-            case "msg" -> order.getMsg();
-            case "status" -> order.getStatus();
-            default -> order.getId();
-        };
-    }
-
-    private Comparator<Order> createComparator(String order, String direction) {
-        Comparator<Order> comparator = Comparator.comparing(
-                orderObj -> (Comparable<Object>) getSortKey(orderObj, order),
-                Comparator.nullsFirst(Comparator.naturalOrder())
+        return new OrderPaginationResponseDto(
+                page.getTotalElements(),
+                page.getSize(),
+                page.hasNext() ? page.getNumber() + 1 : null,
+                page.hasPrevious() ? page.getNumber() - 1 : null,
+                orderDtos
         );
-        return "asc".equalsIgnoreCase(direction) ? comparator : comparator.reversed();
+    }
+
+    public Pageable createPageable(int page, String sortBy, String direction) {
+        int pageNumber = page - 1;
+
+        Sort sort = direction.equalsIgnoreCase("asc")
+                ? Sort.by(Sort.Order.asc(sortBy))
+                : Sort.by(Sort.Order.desc(sortBy));
+
+        return PageRequest.of(pageNumber, 25, sort);
     }
 }
-

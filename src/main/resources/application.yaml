@@ -3,8 +3,8 @@ spring:
     name: CRMdemo
   datasource:
     url: "jdbc:mysql://owu.linkpc.net:3306/dina"
-    username: "dina"
-    password: "root"
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   jpa:
     show-sql: true
     hibernate:
