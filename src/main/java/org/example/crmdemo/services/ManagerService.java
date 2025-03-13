@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class ManagerService implements UserDetailsService {
     private final ManagerRepository managerRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public SignUpResponseDto createManager(@Valid SignUpRequestDto signUpRequestDto) {
         String password = passwordEncoder.encode(signUpRequestDto.getPassword());
         Manager manager = new Manager();

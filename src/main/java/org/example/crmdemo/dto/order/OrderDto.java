@@ -1,5 +1,6 @@
 package org.example.crmdemo.dto.order;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -7,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.crmdemo.enums.OrderStatus;
 
 import java.time.LocalDateTime;
 
@@ -43,6 +45,8 @@ public class OrderDto {
     private String utm;
     @Size(max = 100, message = "Message: 100 symbols max")
     private String msg;
-    @Size(max = 15, message = "Status: 15 symbols max")
-    private String status;
+    private OrderStatus status;
+    private String manager;
+    @Column(name = "`group`")
+    private String group;
 }

@@ -5,9 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.crmdemo.enums.OrderStatus;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -17,7 +20,6 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,5 +48,14 @@ public class Order {
 
     private String utm;
     private String msg;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
+    private String manager;
+    @Column(name = "`group`")
+    private String group;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
 }

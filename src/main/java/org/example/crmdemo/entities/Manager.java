@@ -38,6 +38,13 @@ public class Manager implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String surname;
+
+
     @Override
     public String getUsername() {
         return email;

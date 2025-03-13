@@ -28,6 +28,8 @@ public class OrderMapper {
                 .utm(order.getUtm())
                 .msg(order.getMsg())
                 .status(order.getStatus())
+                .manager(order.getManager())
+                .group(order.getGroup())
                 .build();
     }
 
@@ -52,6 +54,8 @@ public class OrderMapper {
                 .utm(dto.getUtm())
                 .msg(dto.getMsg())
                 .status(dto.getStatus())
+                .manager(dto.getManager())
+                .group(dto.getGroup())
                 .build();
     }
 }
