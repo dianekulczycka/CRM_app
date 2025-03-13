@@ -21,7 +21,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-    private static final Logger log = LoggerFactory.getLogger(CommentService.class);
     private final CommentRepository commentRepository;
     private final OrderRepository orderRepository;
     private final ManagerRepository managerRepository;
