@@ -6,6 +6,7 @@ import org.example.crmdemo.services.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -15,23 +16,19 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<CommentDto> addComment(
             @PathVariable Long orderId,
             @RequestHeader("Authorization") String token,
             @RequestBody CommentDto dto) {
-
         return new ResponseEntity<>(
                 commentService.addComment(orderId, token.replace("Bearer ", ""), dto),
                 HttpStatus.ACCEPTED
         );
     }
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<CommentDto>> getComments(@PathVariable Long orderId) {
-        return new ResponseEntity<>(
-                commentService.getComments(orderId),
-                HttpStatus.OK
-        );
+        return new ResponseEntity<>(commentService.getComments(orderId), HttpStatus.OK);
     }
 }

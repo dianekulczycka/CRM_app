@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.crmdemo.enums.OrderStatus;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
@@ -49,12 +48,13 @@ public class Order {
     private String utm;
     private String msg;
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private String status;
 
     private String manager;
-    @Column(name = "`group`")
-    private String group;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "group_id")
+    private Group group;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();

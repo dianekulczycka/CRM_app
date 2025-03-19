@@ -1,11 +1,18 @@
 package org.example.crmdemo.mappers;
 
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.example.crmdemo.dto.order.OrderDto;
+import org.example.crmdemo.dto.order.OrderFormDataDto;
+import org.example.crmdemo.entities.Group;
 import org.example.crmdemo.entities.Order;
+import org.example.crmdemo.repositories.GroupRepository;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class OrderMapper {
+    private final GroupRepository groupRepository;
 
     public static OrderDto toDto(Order order) {
         if (order == null) {
@@ -29,33 +36,52 @@ public class OrderMapper {
                 .msg(order.getMsg())
                 .status(order.getStatus())
                 .manager(order.getManager())
-                .group(order.getGroup())
+                .groupName(order.getGroup() != null ? order.getGroup().getName() : null)
                 .build();
     }
 
-    public static Order toEntity(OrderDto dto) {
-        if (dto == null) {
-            return null;
+    public void updateEntity(Order order, OrderDto dto) {
+        if (dto == null || order == null) {
+            return;
         }
 
-        return Order.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .surname(dto.getSurname())
-                .email(dto.getEmail())
-                .phone(dto.getPhone())
-                .age(dto.getAge())
-                .course(dto.getCourse())
-                .courseFormat(dto.getCourseFormat())
-                .courseType(dto.getCourseType())
-                .sum(dto.getSum())
-                .alreadyPaid(dto.getAlreadyPaid())
-                .createdAt(dto.getCreatedAt())
-                .utm(dto.getUtm())
-                .msg(dto.getMsg())
-                .status(dto.getStatus())
-                .manager(dto.getManager())
-                .group(dto.getGroup())
-                .build();
+        order.setName(dto.getName());
+        order.setSurname(dto.getSurname());
+        order.setEmail(dto.getEmail());
+        order.setPhone(dto.getPhone());
+        order.setAge(dto.getAge());
+        order.setCourse(dto.getCourse());
+        order.setCourseFormat(dto.getCourseFormat());
+        order.setCourseType(dto.getCourseType());
+        order.setSum(dto.getSum());
+        order.setAlreadyPaid(dto.getAlreadyPaid());
+        order.setUtm(dto.getUtm());
+        order.setMsg(dto.getMsg());
+        order.setStatus(dto.getStatus());
+
+        if (dto.getGroupName() != null) {
+            Group group = groupRepository.findByName(dto.getGroupName())
+                    .orElseGet(() -> new Group(dto.getGroupName()));
+            order.setGroup(group);
+        }
+    }
+
+    public OrderDto mapToOrderDto(OrderFormDataDto orderFormDataDto) {
+        OrderDto orderDto = new OrderDto();
+        orderDto.setName(orderFormDataDto.getName());
+        orderDto.setSurname(orderFormDataDto.getSurname());
+        orderDto.setEmail(orderFormDataDto.getEmail());
+        orderDto.setPhone(orderFormDataDto.getPhone());
+        orderDto.setAge(NumberUtils.toInt(orderFormDataDto.getAge(), 0));
+        orderDto.setSum(NumberUtils.toInt(orderFormDataDto.getSum().toString(), 0));
+        orderDto.setAlreadyPaid(NumberUtils.toInt(orderFormDataDto.getAlreadyPaid().toString(), 0));
+        orderDto.setStatus(orderFormDataDto.getStatus());
+        orderDto.setCourse(orderFormDataDto.getCourse());
+        orderDto.setCourseFormat(orderFormDataDto.getCourseFormat());
+        orderDto.setCourseType(orderFormDataDto.getCourseType());
+        orderDto.setGroupName(orderFormDataDto.getGroupName());
+
+        return orderDto;
     }
 }
+
