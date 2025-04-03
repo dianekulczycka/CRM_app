@@ -73,8 +73,8 @@ public class OrderMapper {
         orderDto.setEmail(orderFormDataDto.getEmail());
         orderDto.setPhone(orderFormDataDto.getPhone());
         orderDto.setAge(NumberUtils.toInt(orderFormDataDto.getAge(), 0));
-        orderDto.setSum(NumberUtils.toInt(orderFormDataDto.getSum().toString(), 0));
-        orderDto.setAlreadyPaid(NumberUtils.toInt(orderFormDataDto.getAlreadyPaid().toString(), 0));
+        orderDto.setSum(orderFormDataDto.getSum() != null ? orderFormDataDto.getSum().intValue() : 0);
+        orderDto.setAlreadyPaid(orderFormDataDto.getAlreadyPaid() != null ? orderFormDataDto.getAlreadyPaid().intValue() : 0);
         orderDto.setStatus(orderFormDataDto.getStatus());
         orderDto.setCourse(orderFormDataDto.getCourse());
         orderDto.setCourseFormat(orderFormDataDto.getCourseFormat());
