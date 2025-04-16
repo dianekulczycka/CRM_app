@@ -1,12 +1,10 @@
 package org.example.crmdemo.controllers;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.example.crmdemo.dto.order.OrderDto;
-import org.example.crmdemo.dto.order.OrderFormDataDto;
-import org.example.crmdemo.dto.order.OrderPaginationResponseDto;
+import org.example.crmdemo.dto.order.*;
 import org.example.crmdemo.mappers.OrderMapper;
 import org.example.crmdemo.services.OrderService;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,14 +18,17 @@ public class OrderController {
 
     @GetMapping("/")
     public ResponseEntity<OrderPaginationResponseDto> getOrders(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "id") String order,
-            @RequestParam(defaultValue = "desc") String direction
-    ) {
-        Pageable pageable = orderService.createPageable(page, order, direction);
-        OrderPaginationResponseDto response = orderService.getOrders(pageable);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+            @Valid SortDto sortDto,
+            @Valid FilterDto filterDto) {
+        if (filterDto == null || filterDto.isEmpty()) {
+            OrderPaginationResponseDto response = orderService.getOrders(sortDto);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            OrderPaginationResponseDto response = orderService.getOrdersWithFilters(filterDto, sortDto);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
     }
+
 
     @PutMapping("/order/{id}")
     public ResponseEntity<Void> updateOrder(

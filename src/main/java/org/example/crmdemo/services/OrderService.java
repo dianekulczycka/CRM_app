@@ -1,8 +1,10 @@
 package org.example.crmdemo.services;
 
 import lombok.RequiredArgsConstructor;
+import org.example.crmdemo.dto.order.FilterDto;
 import org.example.crmdemo.dto.order.OrderDto;
 import org.example.crmdemo.dto.order.OrderPaginationResponseDto;
+import org.example.crmdemo.dto.order.SortDto;
 import org.example.crmdemo.entities.Group;
 import org.example.crmdemo.entities.Manager;
 import org.example.crmdemo.entities.Order;
@@ -18,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,29 +30,56 @@ public class OrderService {
     private final GroupService groupService;
     private final OrderMapper orderMapper;
 
-    public OrderPaginationResponseDto getOrders(Pageable pageable) {
-        Page<Order> page = orderRepository.findAll(pageable);
-        List<OrderDto> orderDtos = page.stream()
+    public OrderPaginationResponseDto getOrders(SortDto sortDto) {
+        Pageable pageable = createPageable(sortDto.getPage(), sortDto.getOrder(), sortDto.getDirection());
+        Page<Order> ordersPage = orderRepository.findAll(pageable);
+        return retrieveOrdersFromRepo(pageable, ordersPage);
+    }
+
+    public OrderPaginationResponseDto getOrdersWithFilters(FilterDto filterDto, SortDto sortDto) {
+        Pageable pageable = createPageable(sortDto.getPage(), sortDto.getOrder(), sortDto.getDirection());
+
+        Page<Order> ordersPage = orderRepository.findOrdersFiltered(
+                filterDto.getName(),
+                filterDto.getSurname(),
+                filterDto.getEmail(),
+                filterDto.getPhone(),
+                filterDto.getStatus(),
+                filterDto.getCourse(),
+                filterDto.getCourseFormat(),
+                filterDto.getCourseType(),
+                filterDto.getGroupName(),
+                filterDto.getStartDate() != null ? filterDto.getStartDate().atStartOfDay() : null,
+                filterDto.getEndDate() != null ? filterDto.getEndDate().atStartOfDay() : null,
+                pageable
+        );
+        return retrieveOrdersFromRepo(pageable, ordersPage);
+    }
+
+    private OrderPaginationResponseDto retrieveOrdersFromRepo(Pageable pageable, Page<Order> ordersPage) {
+        List<OrderDto> orderDtos = ordersPage
+                .getContent()
+                .stream()
                 .map(OrderMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
+
+        Integer nextPage = ordersPage.hasNext() ? pageable.getPageNumber() + 1 : null;
+        Integer prevPage = ordersPage.hasPrevious() ? pageable.getPageNumber() - 1 : null;
 
         return new OrderPaginationResponseDto(
-                page.getTotalElements(),
-                page.getSize(),
-                page.hasNext() ? page.getNumber() + 1 : null,
-                page.hasPrevious() ? page.getNumber() - 1 : null,
+                ordersPage.getTotalElements(),
+                pageable.getPageSize(),
+                nextPage,
+                prevPage,
                 orderDtos
         );
     }
 
-    public Pageable createPageable(int page, String sortBy, String direction) {
-        int pageNumber = page - 1;
-
+    public Pageable createPageable(Integer page, String order, String direction) {
         Sort sort = direction.equalsIgnoreCase("asc")
-                ? Sort.by(Sort.Order.asc(sortBy))
-                : Sort.by(Sort.Order.desc(sortBy));
-
-        return PageRequest.of(pageNumber, 25, sort);
+                ? Sort.by(order).ascending()
+                : Sort.by(order).descending();
+        return PageRequest.of(page - 1, 25, sort);
     }
 
     @Transactional
