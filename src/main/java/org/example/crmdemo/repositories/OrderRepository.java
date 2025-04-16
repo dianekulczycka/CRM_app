@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("""
-                SELECT o FROM Order o 
+                SELECT o FROM Order o
                 LEFT JOIN o.group g
                 WHERE (:name IS NULL OR o.name LIKE CONCAT('%', :name, '%'))
                 AND (:surname IS NULL OR o.surname LIKE CONCAT('%', :surname, '%'))
