@@ -36,8 +36,15 @@ public class OrderService {
         return retrieveOrdersFromRepo(pageable, ordersPage);
     }
 
-    public OrderPaginationResponseDto getOrdersWithFilters(FilterDto filterDto, SortDto sortDto) {
+    public OrderPaginationResponseDto getOrdersWithFilters(FilterDto filterDto, SortDto sortDto, String token) {
         Pageable pageable = createPageable(sortDto.getPage(), sortDto.getOrder(), sortDto.getDirection());
+        String managerSurname = null;
+        if (Boolean.TRUE.equals(filterDto.getIsAssignedToMe())) {
+            String email = jwtUtility.extractUsername(token);
+            Manager manager = managerRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Manager not found"));
+            managerSurname = manager.getSurname();
+        }
 
         Page<Order> ordersPage = orderRepository.findOrdersFiltered(
                 filterDto.getName(),
@@ -51,6 +58,7 @@ public class OrderService {
                 filterDto.getGroupName(),
                 filterDto.getStartDate() != null ? filterDto.getStartDate().atStartOfDay() : null,
                 filterDto.getEndDate() != null ? filterDto.getEndDate().atStartOfDay() : null,
+                managerSurname,
                 pageable
         );
         return retrieveOrdersFromRepo(pageable, ordersPage);

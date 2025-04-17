@@ -26,6 +26,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                 AND (:groupName IS NULL OR g.name LIKE CONCAT('%', :groupName, '%'))
                 AND (:startDate IS NULL OR o.createdAt >= :startDate)
                 AND (:endDate IS NULL OR o.createdAt <= :endDate)
+                AND (:managerSurname IS NULL OR o.manager = :managerSurname)
             """)
     Page<Order> findOrdersFiltered(
             @Param("name") String name,
@@ -39,6 +40,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             @Param("groupName") String groupName,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate,
+            @Param("managerSurname") String managerSurname,
             Pageable pageable
     );
 }

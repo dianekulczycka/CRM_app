@@ -19,16 +19,18 @@ public class OrderController {
     @GetMapping("/")
     public ResponseEntity<OrderPaginationResponseDto> getOrders(
             @Valid SortDto sortDto,
-            @Valid FilterDto filterDto) {
-        if (filterDto == null || filterDto.isEmpty()) {
+            @Valid FilterDto filterDto,
+            @RequestParam(value = "isAssignedToMe", defaultValue = "false") boolean isAssignedToMe,
+            @RequestHeader("Authorization") String token) {
+        filterDto.setIsAssignedToMe(isAssignedToMe);
+        if (filterDto.isEmpty()) {
             OrderPaginationResponseDto response = orderService.getOrders(sortDto);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            OrderPaginationResponseDto response = orderService.getOrdersWithFilters(filterDto, sortDto);
+            OrderPaginationResponseDto response = orderService.getOrdersWithFilters(filterDto, sortDto, token.replace("Bearer ", ""));
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
-
 
     @PutMapping("/order/{id}")
     public ResponseEntity<Void> updateOrder(
