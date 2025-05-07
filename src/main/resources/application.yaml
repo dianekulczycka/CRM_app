@@ -2,7 +2,7 @@ spring:
   application:
     name: CRMdemo
   datasource:
-    url: "jdbc:mysql://owu.linkpc.net:3306/dina"
+    url: "jdbc:mysql://185.69.152.209:3306/dina"
     username: ${DB_USER}
     password: ${DB_PASSWORD}
   jpa:
