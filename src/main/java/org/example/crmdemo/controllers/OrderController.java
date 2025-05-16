@@ -32,7 +32,7 @@ public class OrderController {
         }
     }
 
-    @PutMapping("/order/{id}")
+    @PatchMapping("/order/{id}")
     public ResponseEntity<Void> updateOrder(
             @PathVariable Long id,
             @Valid @RequestBody OrderFormDataDto orderFormDataDto,
