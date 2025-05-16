@@ -45,7 +45,7 @@ public class OrderService {
         String managerSurname = null;
 
         if (Boolean.TRUE.equals(filterDto.getIsAssignedToMe())) {
-            managerSurname = getManagerFromToken(token);
+            managerSurname = getManagerFromToken(token).getSurname();
         }
 
         Page<Order> ordersPage = orderRepository.findOrdersFiltered(
@@ -94,7 +94,7 @@ public class OrderService {
 
     @Transactional
     public void updateOrder(Long orderId, OrderDto orderDto, String token) {
-        String managerSurname = getManagerFromToken(token);
+        String managerSurname = getManagerFromToken(token).getSurname();
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
@@ -118,7 +118,7 @@ public class OrderService {
         String managerSurname = null;
 
         if (Boolean.TRUE.equals(filterDto.getIsAssignedToMe())) {
-            managerSurname = getManagerFromToken(token);
+            managerSurname = getManagerFromToken(token).getSurname();
         }
 
         List<Order> orders = orderRepository.findOrdersFiltered(
@@ -149,10 +149,9 @@ public class OrderService {
         return outputStream.toByteArray();
     }
 
-    private String getManagerFromToken(String token) {
+    private Manager getManagerFromToken(String token) {
         String email = jwtUtility.extractUsername(token);
-        Manager manager = managerRepository.findByEmail(email)
+        return managerRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Manager not found"));
-        return manager.getSurname();
     }
 }
