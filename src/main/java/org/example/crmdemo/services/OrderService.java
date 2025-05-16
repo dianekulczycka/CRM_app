@@ -1,5 +1,6 @@
 package org.example.crmdemo.services;
 
+import com.alibaba.excel.EasyExcel;
 import lombok.RequiredArgsConstructor;
 import org.example.crmdemo.dto.order.FilterDto;
 import org.example.crmdemo.dto.order.OrderDto;
@@ -19,6 +20,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -39,11 +43,9 @@ public class OrderService {
     public OrderPaginationResponseDto getOrdersWithFilters(FilterDto filterDto, SortDto sortDto, String token) {
         Pageable pageable = createPageable(sortDto.getPage(), sortDto.getOrder(), sortDto.getDirection());
         String managerSurname = null;
+
         if (Boolean.TRUE.equals(filterDto.getIsAssignedToMe())) {
-            String email = jwtUtility.extractUsername(token);
-            Manager manager = managerRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("Manager not found"));
-            managerSurname = manager.getSurname();
+            managerSurname = getManagerFromToken(token);
         }
 
         Page<Order> ordersPage = orderRepository.findOrdersFiltered(
@@ -92,15 +94,12 @@ public class OrderService {
 
     @Transactional
     public void updateOrder(Long orderId, OrderDto orderDto, String token) {
-        String email = jwtUtility.extractUsername(token);
-
-        Manager manager = managerRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Manager not found"));
+        String managerSurname = getManagerFromToken(token);
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        if (order.getManager() != null && !order.getManager().equals(manager.getSurname())) {
+        if (order.getManager() != null && !order.getManager().equals(managerSurname)) {
             throw new RuntimeException("You can only update your orders");
         }
 
@@ -112,5 +111,48 @@ public class OrderService {
         }
 
         orderRepository.save(order);
+    }
+
+
+    public byte[] exportToExcel(FilterDto filterDto, String token) {
+        String managerSurname = null;
+
+        if (Boolean.TRUE.equals(filterDto.getIsAssignedToMe())) {
+            managerSurname = getManagerFromToken(token);
+        }
+
+        List<Order> orders = orderRepository.findOrdersFiltered(
+                filterDto.getName(),
+                filterDto.getSurname(),
+                filterDto.getEmail(),
+                filterDto.getPhone(),
+                filterDto.getStatus(),
+                filterDto.getCourse(),
+                filterDto.getCourseFormat(),
+                filterDto.getCourseType(),
+                filterDto.getGroupName(),
+                filterDto.getStartDate() != null ? filterDto.getStartDate().atStartOfDay() : null,
+                filterDto.getEndDate() != null ? filterDto.getEndDate().atStartOfDay() : null,
+                managerSurname
+        );
+
+        List<OrderDto> orderDtos = orders.stream()
+                .map(OrderMapper::toDto)
+                .toList();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        EasyExcel.write(outputStream, OrderDto.class)
+                .sheet("orders " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yy")))
+                .doWrite(orderDtos);
+
+        return outputStream.toByteArray();
+    }
+
+    private String getManagerFromToken(String token) {
+        String email = jwtUtility.extractUsername(token);
+        Manager manager = managerRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Manager not found"));
+        return manager.getSurname();
     }
 }

@@ -26,7 +26,7 @@ public class FilterDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
     @Setter
-    private Boolean isAssignedToMe = false;
+    private Boolean isAssignedToMe;
 
     public boolean isEmpty() {
         return (name == null || name.isEmpty()) &&

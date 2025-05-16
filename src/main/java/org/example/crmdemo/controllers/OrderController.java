@@ -35,10 +35,20 @@ public class OrderController {
     @PutMapping("/order/{id}")
     public ResponseEntity<Void> updateOrder(
             @PathVariable Long id,
-            @RequestBody OrderFormDataDto orderFormDataDto,
+            @Valid @RequestBody OrderFormDataDto orderFormDataDto,
             @RequestHeader("Authorization") String token) {
         OrderDto orderDto = orderMapper.mapToOrderDto(orderFormDataDto);
         orderService.updateOrder(id, orderDto, token.replace("Bearer ", ""));
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/excel")
+    public ResponseEntity<byte[]> exportOrdersToExcel(
+            @Valid @RequestBody FilterDto filterDto,
+            @RequestHeader("Authorization") String token) {
+        byte[] excelFile = orderService.exportToExcel(filterDto, token.replace("Bearer ", ""));
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=orders.xlsx")
+                .body(excelFile);
     }
 }
