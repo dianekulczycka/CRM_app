@@ -2,10 +2,7 @@ package org.example.crmdemo.services;
 
 import com.alibaba.excel.EasyExcel;
 import lombok.RequiredArgsConstructor;
-import org.example.crmdemo.dto.order.FilterDto;
-import org.example.crmdemo.dto.order.OrderDto;
-import org.example.crmdemo.dto.order.OrderPaginationResponseDto;
-import org.example.crmdemo.dto.order.SortDto;
+import org.example.crmdemo.dto.order.*;
 import org.example.crmdemo.entities.Group;
 import org.example.crmdemo.entities.Manager;
 import org.example.crmdemo.entities.Order;
@@ -24,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +36,20 @@ public class OrderService {
         Pageable pageable = createPageable(sortDto.getPage(), sortDto.getOrder(), sortDto.getDirection());
         Page<Order> ordersPage = orderRepository.findAll(pageable);
         return retrieveOrdersFromRepo(pageable, ordersPage);
+    }
+
+    public List<StatDTO> getOrderStats() {
+        List<Order> orders = orderRepository.findAll();
+
+        return orders.stream()
+                .collect(Collectors.groupingBy(
+                        order -> order.getStatus() == null ? "Not assigned" : order.getStatus(),
+                        Collectors.counting()
+                ))
+                .entrySet()
+                .stream()
+                .map(entry -> new StatDTO(entry.getKey(), entry.getValue()))
+                .toList();
     }
 
     public OrderPaginationResponseDto getOrdersWithFilters(FilterDto filterDto, SortDto sortDto, String token) {

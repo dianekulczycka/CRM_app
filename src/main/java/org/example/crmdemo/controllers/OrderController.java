@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/api/orders")
 @AllArgsConstructor
@@ -30,6 +32,11 @@ public class OrderController {
             OrderPaginationResponseDto response = orderService.getOrdersWithFilters(filterDto, sortDto, token.replace("Bearer ", ""));
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<List<StatDTO>> getOrderStats() {
+        return new ResponseEntity<>(orderService.getOrderStats(), HttpStatus.OK);
     }
 
     @PatchMapping("/order/{id}")
