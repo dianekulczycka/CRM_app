@@ -1,42 +1,72 @@
 package org.example.crmdemo.services;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.example.crmdemo.dto.manager.SignUpRequestDto;
-import org.example.crmdemo.dto.manager.SignUpResponseDto;
+import org.example.crmdemo.dto.manager.CreateManagerRequestDto;
+import org.example.crmdemo.dto.manager.ManagerDto;
+import org.example.crmdemo.dto.order.PaginationResponseDto;
 import org.example.crmdemo.entities.Manager;
+import org.example.crmdemo.entities.Order;
 import org.example.crmdemo.enums.Role;
+import org.example.crmdemo.mappers.ManagerMapper;
 import org.example.crmdemo.repositories.ManagerRepository;
+import org.example.crmdemo.utilities.JwtUtility;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
-@Slf4j
-
 public class ManagerService implements UserDetailsService {
     private final ManagerRepository managerRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final JwtUtility jwtUtility;
+
+    public PaginationResponseDto<ManagerDto> getManagers(Integer page) {
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.by("id").descending());
+        Page<Manager> managersPage = managerRepository.findAll(pageable);
+        List<ManagerDto> managerDtos = managersPage.getContent()
+                .stream()
+                .map(ManagerMapper::toDto)
+                .toList();
+
+        Integer nextPage = managersPage.hasNext() ? page + 1 : null;
+        Integer prevPage = managersPage.hasPrevious() ? page - 1 : null;
+
+        return new PaginationResponseDto<>(
+                managersPage.getTotalElements(),
+                pageable.getPageSize(),
+                nextPage,
+                prevPage,
+                managerDtos
+        );
+    }
 
     @Transactional
-    public SignUpResponseDto createManager(@Valid SignUpRequestDto signUpRequestDto) {
-        String password = passwordEncoder.encode(signUpRequestDto.getPassword());
-        Manager manager = new Manager();
-        manager.setEmail(signUpRequestDto.getEmail());
-        manager.setPassword(password);
-        manager.setRole(Role.ROLE_MANAGER);
-        managerRepository.save(manager);
+    public void createManager(CreateManagerRequestDto dto, String token) {
+        Manager admin = managerRepository.findByEmail(jwtUtility.extractUsername(token))
+                .orElseThrow(() -> new RuntimeException("Invalid role, unable to create a manager"));
 
-        return SignUpResponseDto.builder()
-                .id(manager.getId())
-                .email(manager.getEmail())
-                .build();
+        if (admin.getRole() == Role.ROLE_ADMIN) {
+            Manager manager = new Manager();
+            manager.setEmail(dto.getEmail());
+            manager.setPassword(null);
+            manager.setRole(Role.ROLE_MANAGER);
+            manager.setName(dto.getName());
+            manager.setSurname(dto.getSurname());
+            manager.setIsActive(false);
+            manager.setLastLogIn(null);
+            managerRepository.save(manager);
+        }
     }
+
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

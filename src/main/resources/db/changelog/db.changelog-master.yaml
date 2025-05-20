@@ -23,7 +23,7 @@ databaseChangeLog:
                   name: password
                   type: varchar(255)
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: role
                   type: varchar(255)
@@ -37,6 +37,18 @@ databaseChangeLog:
               - column:
                   name: surname
                   type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: isActive
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lastLogIn
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: true
 
@@ -62,6 +74,12 @@ databaseChangeLog:
               - column:
                   name: surname
                   value: "adminovich"
+              - column:
+                  name: isActive
+                  value: 1
+              - column:
+                  name: lastLogIn
+                  value: null
   - changeSet:
       id: 1.0.3
       author: dina

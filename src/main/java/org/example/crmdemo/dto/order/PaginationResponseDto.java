@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 
-public class OrderPaginationResponseDto {
+public class PaginationResponseDto<T> {
     private Long total;
     private Integer perPage;
     private Integer nextPage;
     private Integer prevPage;
-    private List<OrderDto> data;
+    private List<T> data;
 }

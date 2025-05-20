@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,7 +32,6 @@ public class Manager implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -44,6 +44,10 @@ public class Manager implements UserDetails {
     @Column(nullable = false)
     private String surname;
 
+    @Column(nullable = false)
+    private Boolean isActive = false;
+
+    private LocalDateTime lastLogIn;
 
     @Override
     public String getUsername() {

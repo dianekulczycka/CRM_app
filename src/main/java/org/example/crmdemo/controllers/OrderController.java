@@ -19,23 +19,23 @@ public class OrderController {
     private final OrderMapper orderMapper;
 
     @GetMapping("/")
-    public ResponseEntity<OrderPaginationResponseDto> getOrders(
+    public ResponseEntity<PaginationResponseDto<OrderDto>> getOrders(
             @Valid SortDto sortDto,
             @Valid FilterDto filterDto,
             @RequestParam(value = "isAssignedToMe", defaultValue = "false") boolean isAssignedToMe,
             @RequestHeader("Authorization") String token) {
         filterDto.setIsAssignedToMe(isAssignedToMe);
         if (filterDto.isEmpty()) {
-            OrderPaginationResponseDto response = orderService.getOrders(sortDto);
+            PaginationResponseDto<OrderDto> response = orderService.getOrders(sortDto);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            OrderPaginationResponseDto response = orderService.getOrdersWithFilters(filterDto, sortDto, token.replace("Bearer ", ""));
+            PaginationResponseDto<OrderDto> response = orderService.getOrdersWithFilters(filterDto, sortDto, token.replace("Bearer ", ""));
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
 
     @GetMapping("/stats")
-    public ResponseEntity<List<StatDTO>> getOrderStats() {
+    public ResponseEntity<List<StatDto>> getOrderStats() {
         return new ResponseEntity<>(orderService.getOrderStats(), HttpStatus.OK);
     }
 

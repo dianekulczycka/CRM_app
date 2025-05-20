@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StatDTO {
+public class StatDto {
     public String name;
     public Long count;
 }
