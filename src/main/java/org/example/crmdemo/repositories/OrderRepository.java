@@ -15,21 +15,21 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     // for pagination
     @Query("""
-            SELECT o FROM Order o
-            LEFT JOIN o.group g
-            WHERE (:name IS NULL OR o.name LIKE CONCAT('%', :name, '%'))
-              AND (:surname IS NULL OR o.surname LIKE CONCAT('%', :surname, '%'))
-              AND (:email IS NULL OR o.email LIKE CONCAT('%', :email, '%'))
-              AND (:phone IS NULL OR o.phone LIKE CONCAT('%', :phone, '%'))
-              AND (:status IS NULL OR LOWER(o.status) = LOWER(:status))
-              AND (:course IS NULL OR LOWER(o.course) = LOWER(:course))
-              AND (:courseFormat IS NULL OR LOWER(o.courseFormat) = LOWER(:courseFormat))
-              AND (:courseType IS NULL OR LOWER(o.courseType) = LOWER(:courseType))
-              AND (:groupName IS NULL OR g.name LIKE CONCAT('%', :groupName, '%'))
-              AND (:startDate IS NULL OR o.createdAt >= :startDate)
-              AND (:endDate IS NULL OR o.createdAt <= :endDate)
-              AND (:managerSurname IS NULL OR o.manager = :managerSurname)
-        """)
+                SELECT o FROM Order o
+                LEFT JOIN o.group g
+                WHERE (:name IS NULL OR o.name LIKE CONCAT('%', :name, '%'))
+                  AND (:surname IS NULL OR o.surname LIKE CONCAT('%', :surname, '%'))
+                  AND (:email IS NULL OR o.email LIKE CONCAT('%', :email, '%'))
+                  AND (:phone IS NULL OR o.phone LIKE CONCAT('%', :phone, '%'))
+                  AND (:status IS NULL OR LOWER(o.status) = LOWER(:status))
+                  AND (:course IS NULL OR LOWER(o.course) = LOWER(:course))
+                  AND (:courseFormat IS NULL OR LOWER(o.courseFormat) = LOWER(:courseFormat))
+                  AND (:courseType IS NULL OR LOWER(o.courseType) = LOWER(:courseType))
+                  AND (:groupName IS NULL OR g.name LIKE CONCAT('%', :groupName, '%'))
+                  AND (:startDate IS NULL OR o.createdAt >= :startDate)
+                  AND (:endDate IS NULL OR o.createdAt <= :endDate)
+                  AND (:managerSurname IS NULL OR o.manager = :managerSurname)
+            """)
     Page<Order> findOrdersFiltered(
             @Param("name") String name,
             @Param("surname") String surname,
@@ -48,21 +48,21 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     //for Excel file
     @Query("""
-            SELECT o FROM Order o
-            LEFT JOIN o.group g
-            WHERE (:name IS NULL OR o.name LIKE CONCAT('%', :name, '%'))
-              AND (:surname IS NULL OR o.surname LIKE CONCAT('%', :surname, '%'))
-              AND (:email IS NULL OR o.email LIKE CONCAT('%', :email, '%'))
-              AND (:phone IS NULL OR o.phone LIKE CONCAT('%', :phone, '%'))
-              AND (:status IS NULL OR LOWER(o.status) = LOWER(:status))
-              AND (:course IS NULL OR LOWER(o.course) = LOWER(:course))
-              AND (:courseFormat IS NULL OR LOWER(o.courseFormat) = LOWER(:courseFormat))
-              AND (:courseType IS NULL OR LOWER(o.courseType) = LOWER(:courseType))
-              AND (:groupName IS NULL OR g.name LIKE CONCAT('%', :groupName, '%'))
-              AND (:startDate IS NULL OR o.createdAt >= :startDate)
-              AND (:endDate IS NULL OR o.createdAt <= :endDate)
-              AND (:managerSurname IS NULL OR o.manager = :managerSurname)
-        """)
+                SELECT o FROM Order o
+                LEFT JOIN o.group g
+                WHERE (:name IS NULL OR o.name LIKE CONCAT('%', :name, '%'))
+                  AND (:surname IS NULL OR o.surname LIKE CONCAT('%', :surname, '%'))
+                  AND (:email IS NULL OR o.email LIKE CONCAT('%', :email, '%'))
+                  AND (:phone IS NULL OR o.phone LIKE CONCAT('%', :phone, '%'))
+                  AND (:status IS NULL OR LOWER(o.status) = LOWER(:status))
+                  AND (:course IS NULL OR LOWER(o.course) = LOWER(:course))
+                  AND (:courseFormat IS NULL OR LOWER(o.courseFormat) = LOWER(:courseFormat))
+                  AND (:courseType IS NULL OR LOWER(o.courseType) = LOWER(:courseType))
+                  AND (:groupName IS NULL OR g.name LIKE CONCAT('%', :groupName, '%'))
+                  AND (:startDate IS NULL OR o.createdAt >= :startDate)
+                  AND (:endDate IS NULL OR o.createdAt <= :endDate)
+                  AND (:managerSurname IS NULL OR o.manager = :managerSurname)
+            """)
     List<Order> findOrdersFiltered(
             @Param("name") String name,
             @Param("surname") String surname,
@@ -77,8 +77,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             @Param("endDate") LocalDateTime endDate,
             @Param("managerSurname") String managerSurname
     );
-}
 
+    List<Order> findAllByManager(String managerSurname);
+
+}
 
 
 

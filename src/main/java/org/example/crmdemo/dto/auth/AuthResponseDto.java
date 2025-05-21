@@ -1,4 +1,4 @@
-package org.example.crmdemo.dto.manager;
+package org.example.crmdemo.dto.auth;
 
 import lombok.Builder;
 import lombok.Data;

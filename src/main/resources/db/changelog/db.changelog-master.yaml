@@ -165,3 +165,16 @@ databaseChangeLog:
                     foreignKeyName: fk_orders_groups
                     references: groups(id)
                     onDelete: SET NULL
+  - changeSet:
+      id: 1.0.6
+      author: dina
+      changes:
+        - addColumn:
+            tableName: managers
+            columns:
+              - column:
+                  name: isBanned
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

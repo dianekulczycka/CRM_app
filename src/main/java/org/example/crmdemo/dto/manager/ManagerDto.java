@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.crmdemo.dto.order.StatDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -18,4 +20,6 @@ public class ManagerDto {
     private String surname;
     private Boolean isActive;
     private LocalDateTime lastLogin;
+    private Boolean isBanned;
+    private List<StatDto> stats;
 }

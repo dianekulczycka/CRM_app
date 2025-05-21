@@ -6,10 +6,13 @@ import lombok.Data;
 
 @Data
 @Builder
-public class AuthRequestDto {
-    @NotBlank(message = "Username must not be empty!")
+public class CreateManagerFormDataDto {
+    @NotBlank
     private String email;
 
-    @NotBlank(message = "Password must not be empty!")
-    private String password;
+    @NotBlank
+    private String name;
+
+    @NotBlank
+    private String surname;
 }

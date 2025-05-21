@@ -1,8 +1,8 @@
 package org.example.crmdemo.services;
 
 import lombok.RequiredArgsConstructor;
-import org.example.crmdemo.dto.manager.AuthRequestDto;
-import org.example.crmdemo.dto.manager.AuthResponseDto;
+import org.example.crmdemo.dto.auth.AuthRequestDto;
+import org.example.crmdemo.dto.auth.AuthResponseDto;
 import org.example.crmdemo.entities.Manager;
 import org.example.crmdemo.repositories.ManagerRepository;
 import org.example.crmdemo.utilities.JwtUtility;
@@ -11,6 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -30,12 +32,19 @@ public class AuthService {
             throw new RuntimeException("Invalid credentials");
         }
 
+        Manager manager = managerRepository.findByEmail(authRequestDto.getEmail())
+                .orElseThrow(() -> new RuntimeException("Manager not found"));
+
+        if (Boolean.TRUE.equals(manager.getIsBanned())) {
+            throw new RuntimeException("Manager banned");
+        }
+
+        manager.setLastLogIn(LocalDateTime.now());
+        managerRepository.save(manager);
+
         UserDetails userDetails = managerService.loadUserByUsername(authRequestDto.getEmail());
         String accessToken = jwtUtility.generateAccessToken(userDetails);
         String refreshToken = jwtUtility.generateRefreshToken(userDetails);
-
-        Manager manager = managerRepository.findByEmail(authRequestDto.getEmail())
-                .orElseThrow(() -> new RuntimeException("Manager not found"));
 
         return AuthResponseDto.builder()
                 .accessToken(accessToken)

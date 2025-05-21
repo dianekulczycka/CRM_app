@@ -49,6 +49,9 @@ public class Manager implements UserDetails {
 
     private LocalDateTime lastLogIn;
 
+    @Column(nullable = false)
+    private Boolean isBanned = false;
+
     @Override
     public String getUsername() {
         return email;

@@ -1,4 +1,4 @@
-package org.example.crmdemo.dto.order;
+package org.example.crmdemo.dto.pagination;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

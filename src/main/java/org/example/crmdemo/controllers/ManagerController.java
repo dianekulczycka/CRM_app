@@ -2,9 +2,9 @@ package org.example.crmdemo.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.crmdemo.dto.manager.CreateManagerRequestDto;
+import org.example.crmdemo.dto.manager.CreateManagerFormDataDto;
 import org.example.crmdemo.dto.manager.ManagerDto;
-import org.example.crmdemo.dto.order.PaginationResponseDto;
+import org.example.crmdemo.dto.pagination.PaginationResponseDto;
 import org.example.crmdemo.services.ManagerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +23,15 @@ public class ManagerController {
 
     @PostMapping("/create")
     public ResponseEntity<Void> createManager(
-            @RequestBody @Valid CreateManagerRequestDto dto,
+            @RequestBody @Valid CreateManagerFormDataDto dto,
             @RequestHeader("Authorization") String token) {
         managerService.createManager(dto, token.replace("Bearer ", ""));
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/ban/{id}")
+    public ResponseEntity<Void> toggleBanStatus(@PathVariable Long id) {
+        managerService.toggleBan(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
