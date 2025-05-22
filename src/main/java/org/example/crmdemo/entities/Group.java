@@ -22,13 +22,10 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(unique = true, nullable = false)
     private String name;
-
     @OneToMany(mappedBy = "group", cascade = CascadeType.PERSIST)
     private List<Order> orders = new ArrayList<>();
-
     public Group(String name) {
         this.name = name;
     }

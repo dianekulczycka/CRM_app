@@ -2,7 +2,9 @@ package org.example.crmdemo.controllers;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.example.crmdemo.dto.order.*;
+import org.example.crmdemo.dto.order.OrderDto;
+import org.example.crmdemo.dto.order.OrderRequestDto;
+import org.example.crmdemo.dto.order.StatDto;
 import org.example.crmdemo.dto.pagination.FilterDto;
 import org.example.crmdemo.dto.pagination.PaginationResponseDto;
 import org.example.crmdemo.dto.pagination.SortDto;
@@ -32,7 +34,8 @@ public class OrderController {
             PaginationResponseDto<OrderDto> response = orderService.getOrders(sortDto);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            PaginationResponseDto<OrderDto> response = orderService.getOrdersWithFilters(filterDto, sortDto, token.replace("Bearer ", ""));
+            PaginationResponseDto<OrderDto> response = orderService
+                    .getOrdersWithFilters(filterDto, sortDto, token.replace("Bearer ", ""));
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
@@ -45,9 +48,9 @@ public class OrderController {
     @PatchMapping("/order/{id}")
     public ResponseEntity<Void> updateOrder(
             @PathVariable Long id,
-            @Valid @RequestBody OrderFormDataDto orderFormDataDto,
+            @Valid @RequestBody OrderRequestDto orderRequestDto,
             @RequestHeader("Authorization") String token) {
-        OrderDto orderDto = orderMapper.mapToOrderDto(orderFormDataDto);
+        OrderDto orderDto = orderMapper.mapToOrderDto(orderRequestDto);
         orderService.updateOrder(id, orderDto, token.replace("Bearer ", ""));
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

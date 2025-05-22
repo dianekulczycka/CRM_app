@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthRequestDto {
-    @NotBlank(message = "Username must not be empty!")
-    private String email;
+public class ActivationRequestDto {
     @NotBlank(message = "Password must not be empty!")
     private String password;
+    @NotBlank(message = "confirmPassword must not be empty!")
+    private String confirmPassword;
 }

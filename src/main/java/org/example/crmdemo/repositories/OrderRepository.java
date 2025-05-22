@@ -13,7 +13,6 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    // for pagination
     @Query("""
                 SELECT o FROM Order o
                 LEFT JOIN o.group g
@@ -46,7 +45,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             Pageable pageable
     );
 
-    //for Excel file
     @Query("""
                 SELECT o FROM Order o
                 LEFT JOIN o.group g
@@ -79,7 +77,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     );
 
     List<Order> findAllByManager(String managerSurname);
-
 }
 
 

@@ -10,25 +10,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/api/orders/{orderId}/comments")
 @RequiredArgsConstructor
-
+@RequestMapping("/v1/api/orders/{orderId}/comments")
 public class CommentController {
     private final CommentService commentService;
+
+    @GetMapping("/")
+    public ResponseEntity<List<CommentDto>> getComments(@PathVariable Long orderId) {
+        return new ResponseEntity<>(commentService.getComments(orderId), HttpStatus.OK);
+    }
 
     @PostMapping("/")
     public ResponseEntity<CommentDto> addComment(
             @PathVariable Long orderId,
             @RequestHeader("Authorization") String token,
-            @RequestBody CommentDto dto) {
+            @RequestBody CommentDto commentDto) {
         return new ResponseEntity<>(
-                commentService.addComment(orderId, token.replace("Bearer ", ""), dto),
+                commentService.addComment(orderId, token.replace("Bearer ", ""), commentDto),
                 HttpStatus.ACCEPTED
         );
-    }
-
-    @GetMapping("/")
-    public ResponseEntity<List<CommentDto>> getComments(@PathVariable Long orderId) {
-        return new ResponseEntity<>(commentService.getComments(orderId), HttpStatus.OK);
     }
 }

@@ -2,7 +2,7 @@ package org.example.crmdemo.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.crmdemo.dto.manager.CreateManagerFormDataDto;
+import org.example.crmdemo.dto.manager.CreateManagerRequestDto;
 import org.example.crmdemo.dto.manager.ManagerDto;
 import org.example.crmdemo.dto.pagination.PaginationResponseDto;
 import org.example.crmdemo.services.ManagerService;
@@ -23,9 +23,9 @@ public class ManagerController {
 
     @PostMapping("/create")
     public ResponseEntity<Void> createManager(
-            @RequestBody @Valid CreateManagerFormDataDto dto,
+            @RequestBody @Valid CreateManagerRequestDto createManagerRequestDto,
             @RequestHeader("Authorization") String token) {
-        managerService.createManager(dto, token.replace("Bearer ", ""));
+        managerService.createManager(createManagerRequestDto, token.replace("Bearer ", ""));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -35,3 +35,4 @@ public class ManagerController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
+

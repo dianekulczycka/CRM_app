@@ -28,27 +28,19 @@ public class Manager implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @Column(unique = true, nullable = false)
     private String email;
-
     private String password;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-
     @Column(nullable = false)
     private String name;
-
     @Column(nullable = false)
     private String surname;
-
     @Column(nullable = false)
     private Boolean isActive = false;
-
     private LocalDateTime lastLogIn;
-
     @Column(nullable = false)
     private Boolean isBanned = false;
 
@@ -56,12 +48,10 @@ public class Manager implements UserDetails {
     public String getUsername() {
         return email;
     }
-
     @Override
     public String getPassword() {
         return password;
     }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.toString()));

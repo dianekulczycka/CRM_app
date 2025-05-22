@@ -10,12 +10,10 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 public class CommentMapper {
-
     public static CommentDto toDto(Comment comment) {
         if (comment == null) {
             return null;
         }
-
         return CommentDto.builder()
                 .id(comment.getId())
                 .body(comment.getBody())
@@ -24,17 +22,15 @@ public class CommentMapper {
                 .build();
     }
 
-    public static Comment toEntity(CommentDto dto, Order order) {
-        if (dto == null) {
+    public static Comment toEntity(CommentDto commentDto, Order order) {
+        if (commentDto == null) {
             return null;
         }
-
         Comment comment = new Comment();
         comment.setOrder(order);
-        comment.setBody(dto.getBody());
-        comment.setAuthor(dto.getAuthor());
+        comment.setBody(commentDto.getBody());
+        comment.setAuthor(commentDto.getAuthor());
         comment.setCreatedAt(LocalDateTime.now());
-
         return comment;
     }
 }

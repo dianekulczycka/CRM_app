@@ -2,7 +2,8 @@ package org.example.crmdemo.services;
 
 import com.alibaba.excel.EasyExcel;
 import lombok.RequiredArgsConstructor;
-import org.example.crmdemo.dto.order.*;
+import org.example.crmdemo.dto.order.OrderDto;
+import org.example.crmdemo.dto.order.StatDto;
 import org.example.crmdemo.dto.pagination.FilterDto;
 import org.example.crmdemo.dto.pagination.PaginationResponseDto;
 import org.example.crmdemo.dto.pagination.SortDto;
@@ -55,7 +56,9 @@ public class OrderService {
                 .toList();
     }
 
-    public PaginationResponseDto<OrderDto> getOrdersWithFilters(FilterDto filterDto, SortDto sortDto, String token) {
+    public PaginationResponseDto<OrderDto> getOrdersWithFilters(FilterDto filterDto,
+                                                                SortDto sortDto,
+                                                                String token) {
         Pageable pageable = createPageable(sortDto.getPage(), sortDto.getOrder(), sortDto.getDirection());
         String managerSurname = null;
 
@@ -81,7 +84,8 @@ public class OrderService {
         return retrieveOrdersFromRepo(pageable, ordersPage);
     }
 
-    private PaginationResponseDto<OrderDto> retrieveOrdersFromRepo(Pageable pageable, Page<Order> ordersPage) {
+    private PaginationResponseDto<OrderDto> retrieveOrdersFromRepo(Pageable pageable,
+                                                                   Page<Order> ordersPage) {
         List<OrderDto> orderDtos = ordersPage
                 .getContent()
                 .stream()

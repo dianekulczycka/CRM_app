@@ -13,7 +13,6 @@ public class ManagerMapper {
         if (manager == null) {
             return null;
         }
-
         return ManagerDto.builder()
                 .id(manager.getId())
                 .email(manager.getEmail())

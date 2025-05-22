@@ -1,7 +1,7 @@
 package org.example.crmdemo.services;
 
 import lombok.RequiredArgsConstructor;
-import org.example.crmdemo.dto.manager.CreateManagerFormDataDto;
+import org.example.crmdemo.dto.manager.CreateManagerRequestDto;
 import org.example.crmdemo.dto.manager.ManagerDto;
 import org.example.crmdemo.dto.order.StatDto;
 import org.example.crmdemo.dto.pagination.PaginationResponseDto;
@@ -33,7 +33,11 @@ public class ManagerService implements UserDetailsService {
     private final OrderRepository orderRepository;
 
     public PaginationResponseDto<ManagerDto> getManagers(Integer page) {
-        Pageable pageable = PageRequest.of(page - 1, 3, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(
+                page - 1,
+                3,
+                Sort.by("id")
+                        .descending());
         Page<Manager> managersPage = managerRepository.findByRoleNot(Role.ROLE_ADMIN, pageable);
 
         List<ManagerDto> managerDtos = managersPage.getContent()
@@ -67,7 +71,7 @@ public class ManagerService implements UserDetailsService {
 
 
     @Transactional
-    public void createManager(CreateManagerFormDataDto dto, String token) {
+    public void createManager(CreateManagerRequestDto dto, String token) {
         Manager admin = managerRepository.findByEmail(jwtUtility.extractUsername(token))
                 .orElseThrow(() -> new RuntimeException("Invalid role, unable to create a manager"));
 
@@ -98,4 +102,5 @@ public class ManagerService implements UserDetailsService {
                 .findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User with provided email was not found"));
     }
+
 }

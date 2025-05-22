@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/api/groups")
 @RequiredArgsConstructor
+@RequestMapping("/v1/api/groups")
 public class GroupController {
     private final GroupService groupService;
 

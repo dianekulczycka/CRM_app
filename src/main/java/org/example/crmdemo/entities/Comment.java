@@ -23,10 +23,8 @@ public class Comment {
     private Long id;
     private String body;
     private String author;
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;

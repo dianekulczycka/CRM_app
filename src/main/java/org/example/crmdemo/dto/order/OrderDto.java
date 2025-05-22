@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class OrderDto {
     private Long id;
     @Size(max = 25, message = "Name: 25 symbols max")

@@ -1,14 +1,15 @@
 package org.example.crmdemo.dto.pagination;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class FilterDto {
@@ -25,7 +26,6 @@ public class FilterDto {
     private LocalDate startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
-    @Setter
     private Boolean isAssignedToMe;
 
     public boolean isEmpty() {
