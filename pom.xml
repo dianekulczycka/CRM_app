@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.example</groupId>
-    <artifactId>CRMdemo</artifactId>
+    <artifactId>CRM_app</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>CRMdemo</name>
     <description>CRMdemo</description>
